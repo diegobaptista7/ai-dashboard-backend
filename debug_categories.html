@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Debug Categories</title></head>
+<body>
+<pre id="output">Loading...</pre>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const supabase = createClient(
+  'https://nzmgqjkjoexcbjtqlymp.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bWdxamtqb2V4Y2JqdHFseW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2NDYzMjcsImV4cCI6MjA1NzIyMjMyN30.yVknFP1ZYaVPLss3B6AwmhVABFy_ulyU5S4qVAb3FaQ'
+);
+const { data } = await supabase.from('deployed_projects').select('projects, category');
+const cats = {};
+data.forEach(r => {
+  if (r.category) {
+    const c = r.category.trim();
+    if (!cats[c]) cats[c] = [];
+    cats[c].push(r.projects);
+  }
+});
+let out = 'UNIQUE CATEGORIES:\n';
+Object.keys(cats).sort().forEach(c => {
+  out += `\n"${c}" (charCodes: ${[...c].map(ch=>ch.charCodeAt(0)).join(',')}) => ${cats[c].length} rows, projects: ${[...new Set(cats[c])].join('; ')}\n`;
+});
+document.getElementById('output').textContent = out;
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Dependencias de Node.js
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.local
+!.env.example
+
+# Vercel
+.vercel/
+.netlify/
+
+# Archivos locales
+*.log
+vercel_*.txt
+vercel_*.html
