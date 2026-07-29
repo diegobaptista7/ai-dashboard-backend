@@ -15,9 +15,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY main.py .
 COPY documentos/ ./documentos/
 
-# Puerto de exposición
-EXPOSE 8000
+# HuggingFace Spaces requiere usuario no-root y puerto 7860
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
 
-# Comando de inicio
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Puerto 7860 = requerido por HuggingFace Spaces
+EXPOSE 7860
 
+# Comando de inicio compatible con HF Spaces y Railway ($PORT)
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-7860}"]
